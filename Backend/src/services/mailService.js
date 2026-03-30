@@ -1,7 +1,12 @@
 const nodemailer = require('nodemailer');
 
-const createTransporter = () => {
-  return nodemailer.createTransport({
+let transporter = null;
+
+const getTransporter = () => {
+  if (transporter) return transporter;
+  
+  console.log(`📡 Creating new Nodemailer transporter instance (Forcing IPv4)...`);
+  transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
     secure: false, // Use STARTTLS
@@ -10,22 +15,34 @@ const createTransporter = () => {
       pass: process.env.EMAIL_PASS,
     },
     tls: {
-      rejectUnauthorized: false, // Helps with some cloud hosting certificate issues
+      rejectUnauthorized: false,
+      minVersion: 'TLSv1.2',
     },
+    // FORCE IPv4 (Fixes Render/Vercel timeout issues)
+    socketTimeout: 30000,
+    connectionTimeout: 30000,
+    family: 4, 
+    logger: true,
+    debug: true,
   });
+  return transporter;
 };
 
 const sendEmailAsync = async (options) => {
   try {
-    const transporter = createTransporter();
+    const mailTransporter = getTransporter();
     const mailOptions = {
       from: `"DealMind AI" <${process.env.EMAIL_USER}>`,
       ...options,
     };
-    await transporter.sendMail(mailOptions);
-    console.log(`✉️ Email successfully sent to ${options.to}`);
+    
+    console.log(`✉️ Sending email to: ${options.to} (Subject: ${options.subject})`);
+    const info = await mailTransporter.sendMail(mailOptions);
+    console.log('✉️ Email SENT Successfully! Message ID:', info.messageId);
+    return info;
   } catch (error) {
-    console.error('❌ Error sending email:', error.message);
+    console.error('❌ Nodemailer Error Details:', error);
+    throw error;
   }
 };
 
