@@ -160,18 +160,25 @@ exports.forgotPassword = async (req, res) => {
     console.log(`🔑 Reset Link Generated: ${resetUrl}`);
 
     // Send email (Async, don't block the UI)
-    console.log(`📡 Attempting to send reset email to: ${user.email}`);
-    sendResetPasswordEmail(user.email, resetUrl);
+    console.log(`📡 Email Step: Attempting send to: ${user.email}`);
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.warn('⚠️ Warning: EMAIL_USER or EMAIL_PASS missing in Backend .env!');
+    }
+    
+    // We don't await this, so the response is fast
+    sendResetPasswordEmail(user.email, resetUrl).catch(err => {
+      console.error('❌ Async Email Error:', err.message);
+    });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: 'If an account exists, a reset link will be sent shortly!',
+      message: 'If the account exists, a reset link will be sent shortly! 📧',
     });
   } catch (error) {
-    console.error('Forgot Password Error:', error);
+    console.error('❌ Forgot Password CRITICAL Error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to send password reset email',
+      message: error.message || 'Server error during password reset request',
     });
   }
 };
