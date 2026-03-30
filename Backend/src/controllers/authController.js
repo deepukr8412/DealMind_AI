@@ -159,12 +159,13 @@ exports.forgotPassword = async (req, res) => {
 
     console.log(`🔑 Reset Link Generated: ${resetUrl}`);
 
-    // Send email
-    await sendResetPasswordEmail(user.email, resetUrl);
+    // Send email (Async, don't block the UI)
+    console.log(`📡 Attempting to send reset email to: ${user.email}`);
+    sendResetPasswordEmail(user.email, resetUrl);
 
     res.status(200).json({
       success: true,
-      message: 'Reset password link has been sent to your email 📧',
+      message: 'If an account exists, a reset link will be sent shortly!',
     });
   } catch (error) {
     console.error('Forgot Password Error:', error);
