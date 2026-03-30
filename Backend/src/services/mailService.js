@@ -5,16 +5,17 @@ let transporter = null;
 const getTransporter = () => {
   if (transporter) return transporter;
   
-  console.log(`📡 Creating new Nodemailer transporter instance (Forcing IPv4)...`);
+  console.log(`📡 Creating new Nodemailer transporter instance (Switching to 465/SSL)...`);
   transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // Use STARTTLS
+    port: 465,
+    secure: true, // Use SSL for Port 465
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
     tls: {
+      // Still reject unauthorized because we are using SSL
       rejectUnauthorized: false,
       minVersion: 'TLSv1.2',
     },
@@ -42,7 +43,7 @@ const sendEmailAsync = async (options) => {
     return info;
   } catch (error) {
     console.error('❌ Nodemailer Error Details:', error);
-    throw error;
+    // Don't throw for non-blocking calls, just log
   }
 };
 
