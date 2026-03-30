@@ -36,6 +36,9 @@ const io = new Server(server, {
     methods: ['GET', 'POST'],
     credentials: true,
   },
+  pingTimeout: 60000,   // Wait 60s for client
+  pingInterval: 25000,  // Check every 25s
+  transports: ['websocket', 'polling']
 });
 
 // ===== Middleware =====

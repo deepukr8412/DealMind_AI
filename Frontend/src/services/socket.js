@@ -13,10 +13,11 @@ export const connectSocket = (token) => {
 
   socket = io(SOCKET_URL, {
     auth: { token },
-    transports: ['websocket', 'polling'],
+    transports: ['websocket', 'polling'], // Try websocket first
     reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000,
+    reconnectionAttempts: 10,
+    reconnectionDelay: 2000,
+    timeout: 30000, // Connection timeout
   });
 
   socket.on('connect', () => {
