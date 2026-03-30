@@ -40,8 +40,10 @@ export default function Register() {
   };
 
   const handleGoogleLogin = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
-    window.location.href = `${apiUrl}/api/auth/google`;
+    let baseUrl = import.meta.env.VITE_API_URL || window.location.origin;
+    // Remove /api if user added it to the environment variable to avoid double /api/api
+    const cleanBaseUrl = baseUrl.endsWith('/api') ? baseUrl.slice(0, -4) : baseUrl;
+    window.location.href = `${cleanBaseUrl}/api/auth/google`;
   };
 
   return (
