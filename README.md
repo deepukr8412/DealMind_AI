@@ -205,7 +205,7 @@ IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/...
    npm install
    npm run dev
    ```
-3. **Terminal 2 (Frontend):**
+3. **Terminal 2 (Frontend):*
    ```bash
    cd Frontend
    npm install
@@ -227,5 +227,6 @@ IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/...
 1. **Multiplayer Showdowns:** Face off against friends in real-time.
 2. **Voice Negotiation:** Speak directly to the AI seller.
 3. **Achievement Badges:** Unlock "Master Negotiator" and "Whale Hunter" medals.
-#   D e a l M i n d _ A I  
+#   D e a l M i n d _ A I 
+ 
  
